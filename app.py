@@ -106,7 +106,7 @@ def register():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        role = 'admin' if form.is_admin.data else 'user'
+        role = form.role.data  # 'user' or 'admin' from radio button
 
         conn = connect_db()
         cursor = conn.cursor()
@@ -114,33 +114,42 @@ def register():
                        (username, generate_password_hash(password), role))
         conn.commit()
         conn.close()
+
         flash('Registration successful! You can now log in.', 'success')
         return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
 
-
-# Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
+        role = form.role.data  # get selected role from form radio button
+
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE username=? AND role='user'", (username,))
+        cursor.execute("SELECT * FROM users WHERE username=? AND role=?", (username, role))
         user = cursor.fetchone()
         conn.close()
-        if user and check_password_hash(user[2], password):  # Verify hashed password
+
+        if user and check_password_hash(user[2], password):
             session['user_id'] = user[0]
             session['username'] = user[1]
             session['role'] = user[3]
-            return redirect(url_for('user_dashboard'))
+
+            if role == 'admin':
+                return redirect(url_for('admin_dashboard'))
+            else:
+                return redirect(url_for('user_dashboard'))
         else:
-            flash('Invalid credentials for user login, please try again.', 'error')
-            return redirect(url_for('login'))
+            flash('Invalid credentials, please try again.', 'error')
+            return render_template('login.html', form=form)
+
     return render_template('login.html', form=form)
+
+
 
 
 @app.route('/user_dashboard')

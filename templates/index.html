@@ -4,54 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApplyNest</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body, html {
+        html, body {
             height: 100%;
             margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        nav {
+            background-color: #da3b70;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            color: #000;
-            background-color: #e6e6fa;
-        }
-        .container {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            background-color: #fff0f5;
-            padding: 100px;
-            border-radius: 10px;
-            box-shadow: 0 100px 100px rgba(0, 0, 0, 0.2);
-        }
-        .container h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-        .container p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #002e4d;
             color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
         }
-        .btn:hover {
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: #fff !important;
+        }
+
+        .nav-buttons a {
+            background-color: #002e4d;
+            color: #fff !important;
+            padding: 8px 18px;
+            border-radius: 5px;
+            margin-left: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        .nav-buttons a:hover {
             background-color: #000;
+        }
+
+        .content {
+            flex: 1; 
+            padding: 2rem;
+        }
+
+        .about {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .about h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .about p {
+            max-width: 700px;
+            margin: 1rem auto; 
+            font-size: 1.15rem;
+            line-height: 1.8; 
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #da3b70;
+            color: white;
+            margin-top: auto; 
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>ApplyNest</h1>
-        <p>Job/Internship postings, applications, and administrative tasks.</p>
-        <a href="{{ url_for('login') }}" class="btn">LOGIN</a>
+
+    <!-- Navbar -->
+    <nav>
+        <a class="navbar-brand" href="#">ApplyNest</a>
+        <div class="nav-buttons">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <div id="jobCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
+            <div class="carousel-inner text-center">
+
+                <div class="carousel-item active">
+                    <img src="{{ url_for('static', filename='images/images.jpg') }}" alt="Internship" width="400">
+                    <div>
+                        <h5>Find Your Dream Job</h5>
+                        <p>Connect with top employers and apply with ease.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/images1.jpg') }}" alt="Internship" width="400">
+                    <div >
+                        <h5>Kickstart Your Career</h5>
+                        <p>Internship opportunities for students and freshers.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/images2.jpg') }}" alt="Internship" width="400">
+                    <div >
+                        <h5>Grow With Us</h5>
+                        <p>Track applications and manage tasks efficiently.</p>
+                    </div>
+                </div>
+
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#jobCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#jobCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+
+        <!-- About Us -->
+        <div class="about">
+            <h2>About Us</h2>
+            <p>
+                ApplyNest is a platform designed to simplify the process of job and internship applications. 
+                Whether you’re a student looking for opportunities, a job seeker aiming for your dream role, 
+                or an employer seeking the best talent, ApplyNest provides a seamless experience for all.
+            </p>
+            <p>
+                Our mission is to bridge the gap between talent and opportunity by providing an intuitive, 
+                efficient, and user-friendly platform that empowers users to grow their careers.
+            </p>
+        </div>
+
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 ApplyNest | All Rights Reserved</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
