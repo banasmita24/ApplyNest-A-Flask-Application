@@ -1,108 +1,153 @@
+/* General Layout */
 body {
-    font-family: OCR A Std, monospace;
-    background-color: #e6f5ff;
+    background: white;
     margin: 0;
     padding: 0;
+    color: #333;
+    font-size: 18px;  /* Increased base font size */
+    line-height: 1.6;
 }
 
+/* Navbar */
 nav {
-    background-color: #333;
+    background: #da3b70;   
     color: white;
-    padding: 1em;
-    text-align: center;
+    padding: 1em 2em;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-nav a {
+/* Left side (Apply Nest) */
+nav .brand {
+    font-size: 32px;
+    font-weight: bold;
     color: white;
-    margin: 0 1em;
     text-decoration: none;
-    font-size: 17px;
 }
 
-nav a:hover {
-    text-decoration: underline;
+/* Right side links */
+nav .nav-links a {
+    background-color: #002e4d;
+    color: #fff !important;
+    padding: 8px 18px;
+    border-radius: 5px;
+    margin-left: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 1rem;
 }
 
+a{
+    text-decoration: none;
+}
+
+nav .nav-links a:hover {
+    color: #2c3e50;  
+}
+
+
+/* Container */
 .container {
-    padding: 1em;
+    padding: 2em;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 20px auto;
 }
 
+/* Headings */
 h1 {
     margin-bottom: 1em;
-    font-size: 2em;
-    color: #333;
+    font-size: 2.5em;  /* Bigger heading */
+    color: #2c3e50;
     text-align: center;
-}
-
-.job-posting, .job-posting form {
-    border: 1px solid #ccc;
-    padding: 1em;
-    margin-bottom: 1em;
-    background-color: white;
-    border-radius: 8px;
-}
-
-.job-posting form input, .job-posting form textarea, .job-posting form button {
-    display: block;
-    width: calc(100% - 22px);
-    margin-top: 0.5em;
-    padding: 10px;
-    font-size: 1em;
-}
-
-form input[type="text"], form input[type="email"], form textarea {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    margin-bottom: 1em;
-}
-
-ul li.success {
-    color: green;
-}
-
-ul li.error {
-    color: red;
-}
-
-label {
     font-weight: bold;
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea {
+/* Card Style for Forms & Job Postings */
+.job-posting, .job-posting form {
+    border: 1px solid #ddd;
+    padding: 1.8em;
+    margin-bottom: 1.5em;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    font-size: 1.1em; /* Slightly bigger inside forms */
+}
+
+/* Inputs */
+.job-posting form input, 
+.job-posting form textarea, 
+.job-posting form button {
+    display: block;
     width: 100%;
+    margin-top: 0.8em;
+    padding: 14px; /* Larger padding for better readability */
+    font-size: 1.05em; /* Increased font size */
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+textarea {
     box-sizing: border-box;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
-    padding: 10px;
-    margin: 10px 0;
+input:focus, textarea:focus {
+    border-color: #1abc9c;
+    outline: none;
+    box-shadow: 0 0 6px rgba(26, 188, 156, 0.3);
 }
 
+/* Button */
 button {
-    display: block;
     margin-top: 1em;
-    background-color: #28a745;
+    background: #da3b70; 
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    padding: 10px 15px;
-    font-size: 1em;
-    width: 100%;
-    font-family: OCR A Std, monospace;
+    padding: 14px 18px;
+    font-size: 1.1em;
+    transition: background 0.3s ease, transform 0.1s ease;
 }
 
 button:hover {
-    background-color: #008CBA;
+    background: #d1bdc4; 
+    transform: translateY(-2px);
 }
 
+button:active {
+    transform: translateY(0);
+}
+
+/* Error & Success Messages */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li.success {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+li.error, .error {
+    color: #dc3545;
+    font-size: 1em;
+    margin-top: 5px;
+}
+
+/* Labels */
+label {
+    font-weight: bold;
+    margin-top: 12px;
+    display: inline-block;
+    font-size: 1.05em; /* Slightly bigger */
+}

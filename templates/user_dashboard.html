@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: OCR A Std, monospace;
-            background-color: rgb(251, 207, 40);
+            background-color: #da3b70;
             background-image: radial-gradient(circle, rgba(81, 123, 144, 1) 0%, rgba(136, 225, 236, 1) 100%), url(https://img.icons8.com/android/2x/happy.png);
             background-size: auto;
             background-position: left top;
@@ -23,7 +23,7 @@
             background: white;
             box-shadow: 0px 4px 85px -9px rgba(30, 34, 79, 1);
             border-radius: 15px;
-            border-top: 10px solid #28a745;
+            border-top: 10px solid #da3b70;
         }
 
         #text {
@@ -54,7 +54,7 @@
         }
 
         .button {
-            background-color: #04AA6D; /* Green */
+            background-color: #da3b70;
             border: none;
             color: white;
             padding: 10px 32px;
@@ -62,7 +62,6 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            font-family: OCR A Std, monospace;
             border-radius: 8px; /* Add rounded corners */
             transition-duration: 0.4s; /* Add a transition effect */
         }
@@ -76,7 +75,7 @@
         }
 
         h2 {
-            color: #28a745;
+            color: #da3b70;
             font-size: 1.8em;
             border-bottom: 2px solid #ddd;
             padding-bottom: 10px;
@@ -121,6 +120,11 @@
             font-size: 1em;
             color: #666;
         }
+        .job-status {
+            font-size: 1em;
+            color: #000814;
+            font-weight: bold;
+        }
 
         .apply-form {
             max-width: 25%;
@@ -152,6 +156,26 @@
             color: #0056b3;
         }
 
+        .alert{
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: whitesmoke;
+            background-color: #001d3d;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1;
+            min-width: 200px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            opacity: 0.95;
+        }
+
+        .alert-error{
+            background-color: #d9d9d9;
+        }
+
+
         @media (max-width: 768px) {
             .job-card {
                 flex-direction: column;
@@ -171,9 +195,32 @@
             }
         }
     </style>
+
+    <script>
+        window.onload=function(){
+            const alerts= document.querySelectorAll('.alert');
+            alerts.forEach(alert=> {
+                setTimeout(() => {
+                    alert.style.display ='none';
+                },3000);
+            });
+        }
+    </script>
 </head>
 <body>
     <div class="container">
+
+        <!-- submition pop-up-->
+        {% with messages = get_flashed_messages(with_categories =true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <header>
             <div id="text">Welcome!, {{ session.username }}</div>
             <nav>
@@ -193,9 +240,19 @@
                                 <p>{{ job[2] }}</p>
                             </div>
                             <form class="apply-form" action="{{ url_for('apply', job_id=job[0]) }}" method="post" enctype="multipart/form-data">
-                                <input type="text" name="name" placeholder="Your Name" required>
-                                <input type="email" name="email" placeholder="Your Email" required>
-                                <input type="file" name="resume" accept=".pdf" required>
+                                {{ form.hidden_tag() }}
+                                {{ form.name(placeholder="Your Name", required=true) }}
+                                {% if form.name.errors %}
+                                    <span class="error">{{ form.name.errors[0] }}</span>
+                                {% endif %}
+                                {{ form.email(placeholder="Your Email", required=true) }}
+                                {% if form.email.errors %}
+                                    <span class="error">{{ form.email.errors[0] }}</span>
+                                {% endif %}
+                                {{ form.resume(required=true) }}
+                                {% if form.resume.errors %}
+                                    <span class="error">{{ form.resume.errors[0] }}</span>
+                                {% endif %}
                                 <button type="submit" class="button">Apply</button>
                             </form>
                         </li>
@@ -217,6 +274,9 @@
                                 <p>{{ job[1] }}</p>
                                 <a href="{{ url_for('static', filename='resumes/' ~ job[2]) }}" target="_blank" class="view-resume-btn">View Resume</a>
                             </div>
+
+                            <div class="job-status">
+                                <span>Status: <strong>{{ job[3]}}</strong></span> </div>
                         </li>
                     {% endfor %}
                 </ul>

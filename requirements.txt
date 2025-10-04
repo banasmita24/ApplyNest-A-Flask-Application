@@ -1,2 +1,5 @@
 Flask
+Flask-WTF
+WTForms
+email_validator
 Gunicorn

@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('index') }}">Home</a>
-        <a href="{{ url_for('login') }}">Login</a>
-        <a href="{{ url_for('register') }}">Register</a>
-    </nav>
-    <div class="container">
+   <!-- Navbar -->
+   <nav>
+        <a href="{{ url_for('index' )}}" class="brand">ApplyNest</a>
+        <div class="nav-links">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </div>
+   </nav>
+
+   <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <ul>
@@ -22,6 +26,7 @@
         </ul>
         {% endif %}
         {% endwith %}
+
         {% block content %}{% endblock %}
     </div>
 </body>
