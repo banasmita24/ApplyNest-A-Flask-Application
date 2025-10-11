@@ -1,0 +1,37 @@
+/* ...existing code... */
+:root {
+  --bg: #0f1720;
+  --card: #111827;
+  --muted: #9ca3af;
+  --text: #e6eef6;
+  --accent: #2dd4bf;
+}
+
+body.dark_professional {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.navbar, .card, .panel {
+  background: var(--card);
+  color: var(--text);
+  border-radius: 6px;
+}
+
+a, .btn-primary {
+  color: var(--bg);
+  background: linear-gradient(90deg, var(--accent), #60a5fa);
+}
+
+input, textarea, select {
+  background: #0b1220;
+  color: var(--text);
+  border: 1px solid #1f2937;
+}
+
+.theme-control { position: fixed; right: 18px; top: 18px; z-index: 1031; }
+.theme-control .slider { background-color: #1f2937; }
+.theme-control .slider:before { background-color: var(--text); }
+.theme-control input:checked + .slider { background-color: var(--accent); }
+/* ...existing code... */

@@ -1,0 +1,24 @@
+<head>
+  <!-- ...existing head content (meta, title, existing CSS) ... -->
+
+  <!-- use existing styles.css as the light/base stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+  <!-- override with dark theme files when selected -->
+  {% if current_theme == 'dark' %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dark_professional.css') }}">
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='js/theme_toggle.js') }}" defer></script>
+</head>
+<body class="{{ current_theme }}">
+  <!-- Theme control (keeps UI minimal) -->
+  <div class="theme-control" title="Toggle Dark Mode">
+    <label class="switch">
+      <input type="checkbox" id="theme-toggle" {% if current_theme == 'dark' %}checked{% endif %}>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <!-- ...rest of your body and blocks... -->
+</body>
