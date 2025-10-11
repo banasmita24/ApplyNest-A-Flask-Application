@@ -17,10 +17,10 @@
                             
                             <!-- Username -->
                             <div class="mb-3">
-                                <label for="username" class="form-label">Email or Phone</label>
+                                <label for="username" class="form-label">Username</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    {{ form.username(class="form-control", id="username", placeholder="Enter email or phone", required=true) }}
+                                    {{ form.username(class="form-control", id="username", placeholder="Enter username", required=true) }}
                                 </div>
                                 {% if form.username.errors %}
                                     <div class="text-danger small mt-1">{{ form.username.errors[0] }}</div>
