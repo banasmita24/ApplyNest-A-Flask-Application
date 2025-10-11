@@ -19,6 +19,32 @@ UPLOAD_FOLDER = 'static/resumes'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 update_schema_with_keywords()
 
+# Theme support (light / dark)
+THEME_OPTIONS = ('light', 'dark')
+
+def get_theme():
+    return session.get('theme', 'dark_professional')  # Default to dark
+
+@app.context_processor
+def inject_theme():
+    # makes `current_theme` available in all templates, mapping dark_professional to dark
+    theme = get_theme()
+    if theme == 'dark_professional':
+        current_theme = 'dark'
+    else:
+        current_theme = 'light'
+    return dict(current_theme=current_theme)
+
+@app.route('/set_theme/<theme>')
+def set_theme(theme):
+    if theme not in THEME_OPTIONS:
+        theme = 'light'
+    if theme == 'dark':
+        session['theme'] = 'dark_professional'
+    else:
+        session['theme'] = theme
+    return redirect(request.referrer or url_for('index'))
+
 # Initialize CSRF protection
 csrf = CSRFProtect(app)
 
@@ -224,7 +250,11 @@ def login():
 
     return render_template('login.html', form=form)
 
-
+@app.before_request
+def ensure_theme():
+    # for quick testing force a visible dark theme if none selected
+    if 'theme' not in session:
+        session['theme'] = 'dark_professional'
 
 
 @app.route('/user_dashboard')

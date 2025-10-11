@@ -1,0 +1,44 @@
+/* ...existing code... */
+:root {
+  --bg: #05060a;
+  --panel: #071129;
+  --text: #e7f0ff;
+  --muted: #9fb4d8;
+  --accent: #ff3b81;
+  --accent2: #00f0ff;
+}
+
+body.dark_gamer {
+  background: radial-gradient(ellipse at 10% 10%, rgba(0,240,255,0.05), transparent 20%),
+              linear-gradient(180deg, #06070d 0%, #03050a 100%);
+  color: var(--text);
+  font-family: "Segoe UI", "Orbitron", monospace;
+}
+
+.navbar, .card, .panel {
+  background: linear-gradient(90deg, rgba(7,17,41,0.9), rgba(3,6,15,0.85));
+  box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+a, .btn-primary {
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  color: #000;
+}
+
+input, textarea, select {
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  border: 1px solid rgba(0,255,255,0.06);
+}
+
+button:focus, input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 12px rgba(0,240,255,0.12), 0 0 24px rgba(255,59,129,0.06);
+}
+
+.theme-control { position: fixed; right: 18px; top: 18px; z-index: 1031; }
+.theme-control .slider { background-color: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.04); }
+.theme-control .slider:before { background-color: var(--text); }
+.theme-control input:checked + .slider { background-color: var(--accent); }
+/* ...existing code... */
