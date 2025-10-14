@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_wtf.csrf import CSRFProtect
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,6 +14,48 @@ app.config['WTF_CSRF_SECRET_KEY'] = os.urandom(24)
 
 # Initialize CSRF protection
 csrf = CSRFProtect(app)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Please log in to access this page.'
+login_manager.login_message_category = 'info'
+
+
+# User model class for Flask-Login
+class User(UserMixin):
+    def __init__(self, user_id, username, password_hash, role):
+        self.id = user_id
+        self.username = username
+        self.password_hash = password_hash
+        self.role = role
+
+    def get_id(self):
+        return str(self.id)
+
+    def is_active(self):
+        return True
+
+    def is_authenticated(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+
+# User loader function for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE id=?", (user_id,))
+    user_data = cursor.fetchone()
+    conn.close()
+    
+    if user_data:
+        return User(user_data[0], user_data[1], user_data[2], user_data[3])
+    return None
 
 
 # Database initialization
@@ -83,9 +126,9 @@ def admin_login():
         user = cursor.fetchone()
         conn.close()
         if user and check_password_hash(user[2], password):  # Verify hashed password
-            session['user_id'] = user[0]
-            session['username'] = user[1]
-            session['role'] = user[3]
+            user_obj = User(user[0], user[1], user[2], user[3])
+            login_user(user_obj)
+            flash('Successfully logged in as admin!', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Invalid credentials for admin login, please try again.', 'error')
@@ -94,8 +137,9 @@ def admin_login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
-    session.clear()
+    logout_user()
     flash('You have been logged out.', 'success')
     return redirect(url_for('index'))
 
@@ -133,9 +177,9 @@ def login():
         user = cursor.fetchone()
         conn.close()
         if user and check_password_hash(user[2], password):  # Verify hashed password
-            session['user_id'] = user[0]
-            session['username'] = user[1]
-            session['role'] = user[3]
+            user_obj = User(user[0], user[1], user[2], user[3])
+            login_user(user_obj)
+            flash('Successfully logged in!', 'success')
             return redirect(url_for('user_dashboard'))
         else:
             flash('Invalid credentials for user login, please try again.', 'error')
@@ -144,11 +188,13 @@ def login():
 
 
 @app.route('/user_dashboard')
+@login_required
 def user_dashboard():
-    if 'user_id' not in session or session['role'] != 'user':
-        return redirect(url_for('login'))
+    if current_user.role != 'user':
+        flash('Access denied. Admin users cannot access user dashboard.', 'error')
+        return redirect(url_for('admin_dashboard'))
 
-    user_id = session['user_id']
+    user_id = current_user.id
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM job_postings")
@@ -160,7 +206,7 @@ def user_dashboard():
         FROM job_applications ja
         JOIN job_postings jp ON ja.job_id = jp.id
         WHERE ja.user_id = ?
-    """, (session['user_id'],))
+    """, (current_user.id,))
     applied_jobs = cursor.fetchall()
 
     conn.close()
@@ -169,13 +215,15 @@ def user_dashboard():
 
 
 @app.route('/apply/<int:job_id>', methods=['POST'])
+@login_required
 def apply(job_id):
-    if 'user_id' not in session or session['role'] != 'user':
-        return redirect(url_for('login'))
+    if current_user.role != 'user':
+        flash('Access denied. Admin users cannot apply for jobs.', 'error')
+        return redirect(url_for('admin_dashboard'))
 
     form = JobApplicationForm()
     if form.validate_on_submit():
-        user_id = session['user_id']
+        user_id = current_user.id
         name = form.name.data
         email = form.email.data
         resume = form.resume.data
@@ -202,13 +250,15 @@ def apply(job_id):
 
 
 @app.route('/admin_dashboard')
+@login_required
 def admin_dashboard():
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
+    if current_user.role != 'admin':
+        flash('Access denied. User accounts cannot access admin dashboard.', 'error')
+        return redirect(url_for('user_dashboard'))
     # Fetch only job postings created by the currently logged-in admin
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM job_postings WHERE admin_id=?", (session['user_id'],))
+    cursor.execute("SELECT * FROM job_postings WHERE admin_id=?", (current_user.id,))
     job_postings = cursor.fetchall()
     conn.close()
     
@@ -219,11 +269,13 @@ def admin_dashboard():
 
 
 @app.route('/view_applications')
+@login_required
 def view_applications():
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
+    if current_user.role != 'admin':
+        flash('Access denied. Only admin users can view applications.', 'error')
+        return redirect(url_for('user_dashboard'))
 
-    admin_id = session['user_id']
+    admin_id = current_user.id
     conn = connect_db()
     cursor = conn.cursor()
 
@@ -250,9 +302,11 @@ def view_applications():
     return render_template('admin_dashboard.html', job_applications=applications, status_form=status_form)
 
 @app.route('/update_status/<int:application_id>',methods =['POST'])
+@login_required
 def update_status(application_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
+    if current_user.role != 'admin':
+        flash('Access denied. Only admin users can update application status.', 'error')
+        return redirect(url_for('user_dashboard'))
     
     form = ApplicationStatusForm()
     if form.validate_on_submit():
@@ -272,15 +326,17 @@ def update_status(application_id):
 
 
 @app.route('/add_job', methods=['POST'])
+@login_required
 def add_job():
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
+    if current_user.role != 'admin':
+        flash('Access denied. Only admin users can add job postings.', 'error')
+        return redirect(url_for('user_dashboard'))
     
     form = JobPostingForm()
     if form.validate_on_submit():
         title = form.title.data
         description = form.description.data
-        admin_id = session['user_id']  # Get the ID of the currently logged-in admin
+        admin_id = current_user.id  # Get the ID of the currently logged-in admin
 
         conn = connect_db()
         cursor = conn.cursor()
@@ -296,9 +352,11 @@ def add_job():
 
 
 @app.route('/edit_job/<int:job_id>', methods=['POST', 'GET'])
+@login_required
 def edit_job(job_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
+    if current_user.role != 'admin':
+        flash('Access denied. Only admin users can edit job postings.', 'error')
+        return redirect(url_for('user_dashboard'))
     
     form = EditJobForm()
     if form.validate_on_submit():
@@ -308,7 +366,7 @@ def edit_job(job_id):
         # Check if the job posting being edited belongs to the currently logged-in admin
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM job_postings WHERE id=? AND admin_id=?", (job_id, session['user_id']))
+        cursor.execute("SELECT * FROM job_postings WHERE id=? AND admin_id=?", (job_id, current_user.id))
         job_posting = cursor.fetchone()
         conn.close()
         if not job_posting:
@@ -328,13 +386,15 @@ def edit_job(job_id):
 
 
 @app.route('/delete_job/<int:job_id>')
+@login_required
 def delete_job(job_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
+    if current_user.role != 'admin':
+        flash('Access denied. Only admin users can delete job postings.', 'error')
+        return redirect(url_for('user_dashboard'))
     # Check if the job posting being deleted belongs to the currently logged-in admin
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM job_postings WHERE id=? AND admin_id=?", (job_id, session['user_id']))
+    cursor.execute("SELECT * FROM job_postings WHERE id=? AND admin_id=?", (job_id, current_user.id))
     job_posting = cursor.fetchone()
     conn.close()
     if not job_posting:

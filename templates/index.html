@@ -1,57 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApplyNest</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #000;
-            background-color: #e6e6fa;
-        }
-        .container {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            background-color: #fff0f5;
-            padding: 100px;
-            border-radius: 10px;
-            box-shadow: 0 100px 100px rgba(0, 0, 0, 0.2);
-        }
-        .container h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-        .container p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #002e4d;
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-        .btn:hover {
-            background-color: #000;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>ApplyNest</h1>
-        <p>Job/Internship postings, applications, and administrative tasks.</p>
+{% extends "layout.html" %}
+{% block title %}ApplyNest{% endblock %}
+{% block content %}
+<div class="welcome-container">
+    <h1>ApplyNest</h1>
+    <p>Job/Internship postings, applications, and administrative tasks.</p>
+    {% if current_user.is_authenticated %}
+        <p>Welcome back, {{ current_user.username }}!</p>
+        {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}" class="btn">Admin Dashboard</a>
+        {% else %}
+            <a href="{{ url_for('user_dashboard') }}" class="btn">User Dashboard</a>
+        {% endif %}
+    {% else %}
         <a href="{{ url_for('login') }}" class="btn">LOGIN</a>
-    </div>
-</body>
-</html>
+    {% endif %}
+</div>
+{% endblock %}

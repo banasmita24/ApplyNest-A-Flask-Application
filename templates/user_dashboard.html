@@ -223,7 +223,7 @@
         {% endwith %}
 
         <header>
-            <div id="text">Welcome!, {{ session.username }}</div>
+            <div id="text">Welcome!, {{ current_user.username }}</div>
             <nav>
                 <a href="{{ url_for('logout') }}" class="button">Logout</a>
             </nav>

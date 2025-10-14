@@ -9,8 +9,19 @@
 <body>
     <nav>
         <a href="{{ url_for('index') }}">Home</a>
-        <a href="{{ url_for('login') }}">Login</a>
-        <a href="{{ url_for('register') }}">Register</a>
+        {% if current_user.is_authenticated %}
+            <span>Welcome, {{ current_user.username }}!</span>
+            {% if current_user.role == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                <a href="{{ url_for('view_applications') }}">View Applications</a>
+            {% else %}
+                <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
     </nav>
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
