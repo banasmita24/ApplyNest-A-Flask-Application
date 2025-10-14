@@ -3,218 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <style>
-        body {
-            font-family: OCR A Std, monospace;
-            background-color: rgb(251, 207, 40);
-            background-image: radial-gradient(circle, rgba(81, 123, 144, 1) 0%, rgba(136, 225, 236, 1) 100%), url(https://img.icons8.com/android/2x/happy.png);
-            background-size: auto;
-            background-position: left top;
-            background-repeat: repeat;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0px 4px 85px -9px rgba(30, 34, 79, 1);
-            border-radius: 15px;
-            border-top: 10px solid #28a745;
-        }
-
-        #text {
-            color: black;
-            background: #FFFFFF;
-            text-indent: 5px;
-            letter-spacing: 5px;
-            font-size: 50px;
-            text-shadow: 1px 1px 0 black, 2px -2px 0 black;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-        }
-
-        header h1 {
-            font-size: 2.5em;
-            color: #333;
-            margin: 0;
-        }
-
-        .button {
-            background-color: #04AA6D; /* Green */
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            border-radius: 8px; /* Add rounded corners */
-            transition-duration: 0.4s; /* Add a transition effect */
-        }
-
-        .button:hover {
-            background-color: #008CBA; /* Blue on hover */
-        }
-
-        main {
-            margin-top: 30px;
-        }
-
-        h2 {
-            color: #28a745;
-            font-size: 1.8em;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        li {
-            display: inline;
-            margin-right: 20px;
-        }
-
-        .job-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f9f9f9;
-            margin: 15px 0;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            transition: box-shadow 0.3s ease, background-color 0.3s ease;
-        }
-
-        .job-card:hover {
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            background-color: #f1f1f1;
-        }
-
-        .job-details {
-            max-width: 70%;
-        }
-
-        .job-details h3 {
-            margin: 0 0 10px;
-            font-size: 1.5em;
-            color: #333;
-        }
-
-        .job-details p {
-            margin: 0;
-            font-size: 1em;
-            color: #666;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #ddd;
-        }
-
-        form {
-            display: inline;
-        }
-
-        input[type="text"], textarea {
-            width: 300px;
-            padding: 10px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-
-        .view-resume-btn {
-            text-decoration: none;
-            color: #007bff;
-            transition: color 0.3s ease;
-            font-size: 1em;
-        }
-
-        .view-resume-btn:hover {
-            color: #0056b3;
-        }
-
-        .add-job-form {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 30px;
-        }
-
-        .add-job-form input[type="text"],
-        .add-job-form textarea {
-            margin: 5px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-family: OCR A Std, monospace;
-            font-size: 1em;
-            width: 100%;
-        }
-
-        .add-job-form button {
-            align-self: flex-start;
-            font-family: OCR A Std, monospace;
-        }
-
-        nav {
-            background-color: grey;
-            color: white;
-            padding: 1em;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        nav a {
-            color: white;
-            margin: 0 1em;
-            text-decoration: none;
-        }
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .job-card,
-            .application-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
         {% with messages = get_flashed_messages() %}
@@ -236,93 +25,144 @@
             </ul>
         </nav>
 
-        <main>
-            <section class="add-job">
-                <h2>Add a New Job Posting</h2>
-                <form class="add-job-form" action="{{ url_for('add_job') }}" method="post">
-                    {{ form.hidden_tag() }}
-                    {{ form.title(placeholder="Job Title", required=true) }}
-                    {% if form.title.errors %}
-                        <span class="error">{{ form.title.errors[0] }}</span>
-                    {% endif %}
-                    {{ form.description(placeholder="Job Description", rows="5", required=true) }}
-                    {% if form.description.errors %}
-                        <span class="error">{{ form.description.errors[0] }}</span>
-                    {% endif %}
-                    <button type="submit" class="button">Add Job</button>
-                </form>
-            </section>
+        <!-- Migration Section -->
+        <section class="job-posting" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
+            <h2>Database Migration</h2>
+            <p>If you're upgrading from an older version, click the button below to add match scores to existing applications.</p>
+            <a href="{{ url_for('migrate_scores') }}" class="button" style="background-color: #17a2b8;">Migrate Existing Applications</a>
+        </section>
 
-            <div id="jobs">
-                <h2>My Job Postings</h2>
-                {% if job_postings %}
-                    <table>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                        {% for job in job_postings %}
-                            <tr>
-                                <td>{{ job[1] }}</td>
-                                <td>{{ job[2] }}</td>
-                                <td>
-                                    <form action="{{ url_for('edit_job', job_id=job[0]) }}" method="post">
-                                        {{ edit_form.hidden_tag() }}
-                                        {{ edit_form.title(value=job[1], required=true) }}
-                                        {% if edit_form.title.errors %}
-                                            <span class="error">{{ edit_form.title.errors[0] }}</span>
-                                        {% endif %}
-                                        {{ edit_form.description(required=true) }}{{ job[2] }}
-                                        {% if edit_form.description.errors %}
-                                            <span class="error">{{ edit_form.description.errors[0] }}</span>
-                                        {% endif %}
-                                        <button type="submit" class="button">Update</button>
-                                    </form>
-                                    <button class="button"><a href="{{ url_for('delete_job', job_id=job[0]) }}" style="color: white; text-decoration: none;">Delete</a></button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+        <!-- Add Job Section -->
+        <section class="job-posting">
+            <h2>Add a New Job Posting</h2>
+            <form action="{{ url_for('add_job') }}" method="post">
+                {{ form.hidden_tag() }}
+                {{ form.title(placeholder="Job Title", required=true) }}
+                {% if form.title.errors %}
+                    <span class="error">{{ form.title.errors[0] }}</span>
                 {% endif %}
-            </div>
+                {{ form.description(placeholder="Job Description", rows="5", required=true) }}
+                {% if form.description.errors %}
+                    <span class="error">{{ form.description.errors[0] }}</span>
+                {% endif %}
+                <button type="submit">Add Job</button>
+            </form>
+        </section>
 
-            <div id="applications">
-                <h2>Job Applications</h2>
-                {% if job_applications %}
-                    <table>
-                        <tr>
-                            <th>Job Title</th>
-                            <th>Applicant Name</th>
-                            <th>Email</th>
-                            <th>Resume</th>
-                            <th>Status</th>
-                            <th>Update</th>
-                        </tr>
-                        {% for application in job_applications %}
-                            <tr>
-                                <td>{{ application.job_title }}</td>
-                                <td>{{ application.name }}</td>
-                                <td>{{ application.email }}</td>
-                                <td><a href="{{ url_for('static', filename='resumes/' ~ application.resume) }}" target="_blank">View</a></td>
-                                <td>
-                                    <form action="{{url_for('update_status', application_id  = application.id)}}" method="post">
-                                        {{ status_form.hidden_tag() }}
-                                        {{ status_form.status() }}
-                                        {% if status_form.status.errors %}
-                                            <span class="error">{{ status_form.status.errors[0] }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <button type="submit" class="button">Update</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
+        <!-- Job Postings -->
+        <section class="job-posting">
+            <h2>My Job Postings</h2>
+            {% if job_postings %}
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+                {% for job in job_postings %}
+                <tr>
+                    <td>{{ job[1] }}</td>
+                    <td>{{ job[2] }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_job', job_id=job[0]) }}" class="button" style="background-color: #28a745; margin: 0 5px;">Edit</a>
+                        <a href="{{ url_for('recalculate_scores', job_id=job[0]) }}" class="button" style="background-color: #17a2b8; margin: 0 5px;">Recalculate Scores</a>
+                        <a href="{{ url_for('delete_job', job_id=job[0]) }}" class="button" style="background-color: #dc3545;">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </section>
+
+
+        <!-- Job Applications -->
+        <section class="job-posting">
+            <h2>Job Applications</h2>
+            {% if job_applications and job_applications|length > 0 %}
+            
+            <div style="overflow-x: auto; margin-bottom: 20px;">
+            
+            <!-- Sorting Controls -->
+            <div class="sort-controls" style="margin-bottom: 20px;">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select" onchange="sortApplications()">
+                    <option value="match_score" {% if current_sort == 'match_score' %}selected{% endif %}>Match Score</option>
+                    <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name</option>
+                    <option value="email" {% if current_sort == 'email' %}selected{% endif %}>Email</option>
+                    <option value="job_title" {% if current_sort == 'job_title' %}selected{% endif %}>Job Title</option>
+                    <option value="status" {% if current_sort == 'status' %}selected{% endif %}>Status</option>
+                </select>
+                
+                <label for="order-select">Order:</label>
+                <select id="order-select" onchange="sortApplications()">
+                    <option value="desc" {% if current_order == 'desc' %}selected{% endif %}>High to Low</option>
+                    <option value="asc" {% if current_order == 'asc' %}selected{% endif %}>Low to High</option>
+                </select>
             </div>
-        </main>
-    </div>
+            
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                        <th style="padding: 12px 8px; text-align: left; border: 1px solid #dee2e6;"><a href="?sort=match_score&order={% if current_sort == 'match_score' and current_order == 'desc' %}asc{% else %}desc{% endif %}" style="text-decoration: none; color: #495057;">Match Score</a></th>
+                        <th style="padding: 12px 8px; text-align: left; border: 1px solid #dee2e6;"><a href="?sort=job_title&order={% if current_sort == 'job_title' and current_order == 'desc' %}asc{% else %}desc{% endif %}" style="text-decoration: none; color: #495057;">Job Title</a></th>
+                        <th style="padding: 12px 8px; text-align: left; border: 1px solid #dee2e6;"><a href="?sort=name&order={% if current_sort == 'name' and current_order == 'desc' %}asc{% else %}desc{% endif %}" style="text-decoration: none; color: #495057;">Applicant Name</a></th>
+                        <th style="padding: 12px 8px; text-align: left; border: 1px solid #dee2e6;"><a href="?sort=email&order={% if current_sort == 'email' and current_order == 'desc' %}asc{% else %}desc{% endif %}" style="text-decoration: none; color: #495057;">Email</a></th>
+                        <th style="padding: 12px 8px; text-align: left; border: 1px solid #dee2e6;">Resume</th>
+                        <th style="padding: 12px 8px; text-align: left; border: 1px solid #dee2e6;"><a href="?sort=status&order={% if current_sort == 'status' and current_order == 'desc' %}asc{% else %}desc{% endif %}" style="text-decoration: none; color: #495057;">Status</a></th>
+                        <th style="padding: 12px 8px; text-align: left; border: 1px solid #dee2e6;">Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for application in job_applications %}
+                <tr style="border-bottom: 1px solid #dee2e6;">
+                    <td style="padding: 12px 8px; border: 1px solid #dee2e6; vertical-align: middle;">
+                        {% if application.match_score >= 70 %}
+                            <span class="match-score" style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; background-color: #d4edda; color: #155724;">
+                                {{ "%.1f"|format(application.match_score) }}%
+                            </span>
+                        {% elif application.match_score >= 50 %}
+                            <span class="match-score" style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; background-color: #fff3cd; color: #856404;">
+                                {{ "%.1f"|format(application.match_score) }}%
+                            </span>
+                        {% else %}
+                            <span class="match-score" style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; background-color: #f8d7da; color: #721c24;">
+                                {{ "%.1f"|format(application.match_score) }}%
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px 8px; border: 1px solid #dee2e6; vertical-align: middle; max-width: 200px; word-wrap: break-word;">{{ application.job_title }}</td>
+                    <td style="padding: 12px 8px; border: 1px solid #dee2e6; vertical-align: middle;">{{ application.name }}</td>
+                    <td style="padding: 12px 8px; border: 1px solid #dee2e6; vertical-align: middle;">{{ application.email }}</td>
+                    <td style="padding: 12px 8px; border: 1px solid #dee2e6; vertical-align: middle;"><a href="{{ url_for('static', filename='resumes/' ~ application.resume) }}" target="_blank" style="color: #007bff; text-decoration: none;">View Resume</a></td>
+                    <td style="padding: 12px 8px; border: 1px solid #dee2e6; vertical-align: middle;">
+                        <form action="{{ url_for('update_status', application_id=application.id) }}" method="post" style="display: inline;">
+                            {{ status_form.hidden_tag() }}
+                            <select name="status" style="padding: 4px; margin-right: 8px; border: 1px solid #ced4da; border-radius: 4px;">
+                                <option value="Pending" {% if application.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="Under Review" {% if application.status == 'Under Review' %}selected{% endif %}>Under Review</option>
+                                <option value="Accepted" {% if application.status == 'Accepted' %}selected{% endif %}>Accepted</option>
+                                <option value="Rejected" {% if application.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                            <button type="submit" class="button" style="padding: 4px 8px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <p>No job applications found. Applications will appear here once users start applying to your job postings.</p>
+            {% endif %}
+        </section>
+
+        <script>
+        function sortApplications() {
+            const sortBy = document.getElementById('sort-select').value;
+            const order = document.getElementById('order-select').value;
+            window.location.href = `?sort=${sortBy}&order=${order}`;
+        }
+        </script>
+
 </body>
 </html>

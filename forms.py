@@ -1,19 +1,22 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, PasswordField, TextAreaField, SelectField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, TextAreaField, SelectField, BooleanField, SubmitField, RadioField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 import sqlite3
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
     password = PasswordField('Password', validators=[DataRequired()])
+    role= RadioField("Role", choices=[("user", "User"), ("admin", "Admin")], validators=[DataRequired()])
     submit = SubmitField('Login')
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
+    full_name = StringField('Full Name', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    is_admin = BooleanField('Register as Admin')
+    role = RadioField("Role", choices=[("user", "User"), ("admin", "Admin")], validators=[DataRequired()])
     submit = SubmitField('Register')
 
     def validate_username(self, username):
@@ -25,10 +28,17 @@ class RegisterForm(FlaskForm):
         if existing_user:
             raise ValidationError('Username already exists. Please choose a different one.')
 
+class ResumeUploadForm(FlaskForm):
+    resume_file = FileField('Upload Resume', validators=[
+        FileRequired(),
+        FileAllowed(['pdf', 'docx'], 'Only PDF or DOCX files are allowed!')
+    ])
+    submit = SubmitField('Upload')
+
+
 class JobApplicationForm(FlaskForm):
-    name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    resume = FileField('Resume', validators=[
+    resume = FileField('Resume (PDF, DOC, or DOCX)', validators=[
         FileRequired(),
         FileAllowed(['pdf', 'doc', 'docx'], 'Only PDF and Word documents are allowed!')
     ])

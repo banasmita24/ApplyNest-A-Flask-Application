@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Job Posting</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav style="height:20px;">
+        <a class="brand" href="#">Edit Job Posting</a>
+        <h2 style="color: white;">Welcome, {{ session.username }}</h2>
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="button">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Edit Job Section -->
+    <section class="job-posting">
+        <h2>Edit Job Posting</h2>
+        <form action="{{ url_for('edit_job', job_id=job_id) }}" method="post">
+            {{ form.hidden_tag() }}
+            <div>
+                <label for="title">Job Title:</label>
+                {{ form.title(placeholder="Job Title", required=true, value=current_job[1]) }}
+                {% if form.title.errors %}
+                    <span class="error">{{ form.title.errors[0] }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <label for="description">Job Description:</label>
+                {{ form.description(placeholder="Job Description", rows="5", required=true) }}
+                {% if form.description.errors %}
+                    <span class="error">{{ form.description.errors[0] }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <button type="submit" class="button">Update Job Posting</button>
+                <a href="{{ url_for('admin_dashboard') }}" class="button" style="background-color: #6c757d; margin-left: 10px;">Cancel</a>
+            </div>
+        </form>
+    </section>
+
+    <script>
+        // Pre-fill the description field
+        document.addEventListener('DOMContentLoaded', function() {
+            const descriptionField = document.querySelector('textarea[name="description"]');
+            if (descriptionField && '{{ current_job[2] }}') {
+                descriptionField.value = '{{ current_job[2] }}';
+            }
+        });
+    </script>
+</body>
+</html>
