@@ -6,15 +6,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-        <!-- Navigation -->
-        <nav style="height:20px;">
-            <a class="brand" href="#">Admin Dashboard</a>
-            <h2 style="color: white;" >Welcome, {{ session.username }}</h1>
-            <div class="nav-links">
-                <a href="admin_dashboard">My Job Postings</a>
-                <a href="view_applications">Job Applications</a>
-                <a href="{{ url_for('logout') }}" class="button">Logout</a>
-            </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    <div class="container">
+        <header>
+            <div id="text">Welcome!, {{ current_user.username }}</div>
+            <a href="{{ url_for('logout') }}" class="button">Logout</a>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="admin_dashboard" onclick="scrollToElement('jobs')">My Job Postings</a></li>
+                <li><a href="view_applications" onclick="scrollToElement('applications')">Job Applications</a></li>
+            </ul>
         </nav>
 
         <!-- Migration Section -->

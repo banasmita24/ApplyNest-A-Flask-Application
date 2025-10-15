@@ -9,21 +9,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-   <!-- Navbar -->
-   <nav class="navbar-custom">
-        <div class="navbar-container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-dove"></i> ApplyNest
-            </a>
-            <div class="nav-buttons">
-                <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
-                <a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register</a>
-            </div>
-        </div>
-   </nav>
-
-   <div class="container">
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            <span>Welcome, {{ current_user.username }}!</span>
+            {% if current_user.role == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                <a href="{{ url_for('view_applications') }}">View Applications</a>
+            {% else %}
+                <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </nav>
+    <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <ul>
